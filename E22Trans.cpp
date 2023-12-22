@@ -27,24 +27,24 @@ bool E22Trans::isNotReady(){
     return true;
 }
 
-void setMode(E22Mode mode){
+void E22Trans::setMode(E22MODE mode){
     while(this->isNotReady()){}
 
     switch (mode)
     {
-    case Mode_Transmission
+    case Mode_Transmission:
         digitalWrite(M1_PIN, LOW);
         digitalWrite(M0_PIN, LOW);
         break;
-    case Mode_WOR
+    case Mode_WOR:
         digitalWrite(M1_PIN, LOW);
         digitalWrite(M0_PIN, HIGH);
         break;
-    case Mode_Configuration
+    case Mode_Configuration:
         digitalWrite(M1_PIN, HIGH);
         digitalWrite(M0_PIN, LOW);
         break;
-    case Mode_DeepSleep
+    case Mode_DeepSleep:
         digitalWrite(M1_PIN, HIGH);
         digitalWrite(M0_PIN, HIGH);
         break;
@@ -59,9 +59,9 @@ void E22Trans::initialConfiguration(){
 
 }
 
-void sendMessage(const char* message){
+void E22Trans::sendMessage(const char* message){
   while(this->isNotReady()){}
-  this.hs.writeln(String(message));
+  this->hs->println(String(message));
 }
 
 void E22Trans::waitForSignal(){
@@ -71,10 +71,10 @@ void E22Trans::waitForSignal(){
   char endMarker = '\n';
   char charReceived;
 
-  if (serialPort->available() > 0) {
-    while (serialPort->available() > 0)
+  if (this->hs->available() > 0) {
+    while (this->hs->available() > 0)
     {
-      charReceived = serialPort->read();
+      charReceived = this->hs->read();
       if (charReceived != endMarker) 
       {
         messageReceived[ndx] = charReceived;
@@ -88,7 +88,10 @@ void E22Trans::waitForSignal(){
         Serial.println("incoming message");
         messageReceived[ndx] = '\0';
         ndx = 0;
-         Serial.println(messageReceived);
+        #ifdef SERIALCOMMANDDEBUG
+        Serial.print("Mesage Received: ");
+        Serial.println(messageReceived);
+        #endif
         this->cp->executeCommand(const_cast<char*>(messageReceived));
       }
     }
