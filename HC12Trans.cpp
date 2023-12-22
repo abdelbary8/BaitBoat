@@ -55,7 +55,10 @@ void HC12Transceiver::waitForSignal(){
         Serial.println("incoming message");
         messageReceived[ndx] = '\0';
         ndx = 0;
-         Serial.println(messageReceived);
+        #ifdef SERIALCOMMANDDEBUG
+        Serial.print("Mesage Received: ");
+        Serial.println(messageReceived);
+        #endif
         this->cp->executeCommand(const_cast<char*>(messageReceived));
       }
     }
