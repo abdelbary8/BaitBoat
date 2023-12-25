@@ -19,7 +19,7 @@ class E22Trans {
     bool isNotReady();
     void setMode(E22MODE);
     void initialConfiguration();
-    void sendMessage(const char*);
+    void sendMessage(byte[], String);
     void waitForSignal();
     
     

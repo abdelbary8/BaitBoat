@@ -14,8 +14,8 @@ void E22Trans::init(){
     pinMode(this->M1_PIN, OUTPUT);
     pinMode(this->M0_PIN, OUTPUT);
     
-    this->setMode(Mode_Configuration);
-    this->initialConfiguration();
+    //this->setMode(Mode_Configuration);
+    //this->initialConfiguration();
     this->setMode(Mode_Transmission);
 }
 
@@ -59,12 +59,21 @@ void E22Trans::initialConfiguration(){
 
 }
 
-void E22Trans::sendMessage(const char* message){
+void E22Trans::sendMessage(byte targetAddressAndChannel[], String message)
+{
   while(this->isNotReady()){}
-  this->hs->println(String(message));
+
+  byte dataByteArray[message.length() + 1];
+  message.getBytes(dataByteArray, message.length() + 1);
+
+  this->hs->write(targetAddressAndChannel, sizeof(targetAddressAndChannel));
+  this->hs->write(dataByteArray, sizeof(dataByteArray));
+  this->hs->println();
+
 }
 
-void E22Trans::waitForSignal(){
+void E22Trans::waitForSignal()
+{
   while(this->isNotReady()){}
   
   static byte ndx = 0;

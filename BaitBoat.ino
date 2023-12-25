@@ -47,9 +47,16 @@ void ntCommand(const char* args){
 }
 
 commandParser cp;
-E22Trans e22(&cp, &SerialPort2, 5, 6, 7);
+E22Trans e22(&cp, &SerialPort2, 18, 19, 23);
 
 void setup() {
+
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Listening...");
+  
   Serial.begin(9600);
   SerialPort2.begin(9600, SERIAL_8N1, 16, 17);
   // delay(80);
@@ -57,11 +64,7 @@ void setup() {
   cp.addCommand("sp", spCommand);
   cp.addCommand("nt", ntCommand);
 
-  lcd.init();
-  lcd.backlight();
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Listening...");
+
 
   
 /*
